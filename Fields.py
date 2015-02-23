@@ -31,11 +31,12 @@ class StaticField():
         //comment
         self.instance_type self.name
     """
-        return str(self.comments) + "\n\t */\n "+ "\t" + self.instance_type + " " + self.name + self.value + ";\n\n"
+        return str(self.comments) + "\n\t */\n "+ "\t" + " " + self.name + self.value + ";\n\n"
 
 def find_fields_details(fields_list, soup):
     for field in fields_list:
         field_details = soup.find("a", {"name": field.name})
+        field.name = str(field_details.findNext("pre").text)
         if field_details.findNext("div", {"class": "block"}):
             field.comments = ReverseDoc.create_comment(str(field_details.findNext("div", {"class": "block"}).text), True)
 
