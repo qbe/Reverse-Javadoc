@@ -76,6 +76,7 @@ def find_fields(soup, location):
             if value_check:
                 field.value = str(value_check.findNext("td", {"class": "colLast"}).text)
                 field.value = " = " + field.value
-    except urllib.error.HTTPError:
+    except:
         pass
+
     return fields_list

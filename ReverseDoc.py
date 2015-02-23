@@ -178,7 +178,9 @@ def ReverseDoc(html, location):
 
 def main(htmlfile=''):
     htmlfile = input("Enter file name with path: ")
+    # htmlfile = "/home/andrew/Documents/AJ-College/Spring2015/CS142/1Perp/Project1/files/Machine.Add.html"
     interface = input("Is this an interface? (y/n) ")
+    # interface = "Y"
     if interface.upper() == "YES" or "Y":
         interface = True
     else:
@@ -186,9 +188,8 @@ def main(htmlfile=''):
     with open(htmlfile) as f:
         htmltext = f.read()
     java = ReverseDoc(htmltext, htmlfile)
-    print(htmlfile.split(".h")[0] + ".java")
-    with open(htmlfile.split(".h")[0] + ".java", "w") as f:
-        f.write(str(java))
+    with open(htmlfile.replace("html", "java"), "w") as f:
+        f.write(java.__str__(interface))
 
 
 if __name__ == '__main__':
