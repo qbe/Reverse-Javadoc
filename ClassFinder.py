@@ -55,6 +55,7 @@ def main():
     # htmlfile = "http://www.cs.rit.edu/~csci142/Labs/04/Doc/"
     # output = "/home/andrew/java"
     # output = "/home/andrew/school/CS142/4BankAccount/Lab4"
+    # output = "/home/andrew/school/CS142/1Perp/Project1"
     javafile = htmlfile.replace("doc", "src")
     if htmlfile[-1] != "/":
         htmlfile += "/"

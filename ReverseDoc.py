@@ -185,7 +185,7 @@ def main(htmlfile=''):
         interface = False
     with open(htmlfile) as f:
         htmltext = f.read()
-    java = ReverseDoc(htmltext, interface)
+    java = ReverseDoc(htmltext, htmlfile)
     print(htmlfile.split(".h")[0] + ".java")
     with open(htmlfile.split(".h")[0] + ".java", "w") as f:
         f.write(str(java))
