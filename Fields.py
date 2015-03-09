@@ -34,10 +34,14 @@ class StaticField():
         return str(self.comments) + "\n\t */\n "+ "\t" + " " + self.name + self.value + ";\n\n"
 
 def find_fields_details(fields_list, soup):
+    """
+
+    :param fields_list:
+    :param soup:
+    """
     for field in fields_list:
         field_details = soup.find("a", {"name": field.name})
         field.name = str(field_details.findNext("pre").text).replace(u'\u00a0', " ")
-        print(field.name)
         if field_details.findNext("div", {"class": "block"}):
             field.comments = ReverseDoc.create_comment(str(field_details.findNext("div", {"class": "block"}).text), True)
 
@@ -54,6 +58,8 @@ def find_fields(soup, location):
     method find_fields
 
     Finds all of the fields and returns them as a python list of type static_field
+    :param soup:
+    :param location:
     """
     fields_list = list()
     field_summary = soup.find("a", {"name": "field.summary"}, recursive="true")

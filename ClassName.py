@@ -18,6 +18,7 @@ def find_class_name(soup):
     method find_class_name
 
     finds a returns the name of the class on the page
+    :param soup:
 """
     my_class = ClassName()
     my_class.title = str(soup.find("pre").text).replace("\n", " ")
