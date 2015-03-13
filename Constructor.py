@@ -3,16 +3,17 @@ import ReverseDoc
 
 class Constructor():
     def __init__(self):
-    """
-    Stores Constructor for later printing
+        """
+        Stores Constructor for later printing
 
-    attributes:
+        attributes:
         sig: signature of the constructor method
         comments: any comments that accompany the constructor
         parameters: what is getting passed to the constructor
         body: constructor body. Will guess at what to put based on parameters and fields. ie. this.speed = speed if
              speed is a parameter
-    """
+        """
+
         self.sig = ""
         self.comments = ""
         self.parameters = list()
