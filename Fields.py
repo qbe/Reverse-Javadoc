@@ -1,8 +1,9 @@
 import ReverseDoc
 from urllib.request import urlopen
-import urllib.error
 from bs4 import BeautifulSoup
 import re
+
+
 class StaticField():
     """
     class static_field
@@ -31,7 +32,8 @@ class StaticField():
         //comment
         self.instance_type self.name
     """
-        return str(self.comments) + "\n\t */\n "+ "\t" + " " + self.name + self.value + ";\n\n"
+        return str(self.comments) + "\n\t */\n " + "\t" + " " + self.name + self.value + ";\n\n"
+
 
 def find_fields_details(fields_list, soup):
     """
@@ -43,7 +45,9 @@ def find_fields_details(fields_list, soup):
         field_details = soup.find("a", {"name": field.name})
         field.name = str(field_details.findNext("pre").text).replace(u'\u00a0', " ")
         if field_details.findNext("div", {"class": "block"}):
-            field.comments = ReverseDoc.create_comment(str(field_details.findNext("div", {"class": "block"}).text), True)
+            field.comments = ReverseDoc.create_comment(str(field_details.findNext("div", {"class": "block"}).text),
+                                                       True)
+
 
 def check_constant(field):
     """
@@ -52,14 +56,13 @@ def check_constant(field):
     """
 
 
-
 def find_fields(soup, location):
     """
     method find_fields
 
     Finds all of the fields and returns them as a python list of type static_field
-    :param soup:
-    :param location:
+    :param soup: Beautiful soup of class page
+    :param location: where is the class file (as a URL)
     """
     fields_list = list()
     field_summary = soup.find("a", {"name": "field.summary"}, recursive="true")
@@ -78,7 +81,7 @@ def find_fields(soup, location):
         constants = urlopen(location + "constant-values.html").read()
         constant_soup = BeautifulSoup(constants)
         for field in fields_list:
-            value_check = constant_soup.find("a", {"name": re.compile(field.name)})
+            value_check = constant_soup.find("a", {"name": re.compile(field.name.split(" ")[-1])})
             if value_check:
                 field.value = str(value_check.findNext("td", {"class": "colLast"}).text)
                 field.value = " = " + field.value
