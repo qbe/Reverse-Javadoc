@@ -58,17 +58,16 @@ def findInterfaces(soup):
 
 
 def main():
-    # htmlfile = input("Enter url to main doc page: ")
-    # output = input("Enter complete location to output src files: ")
+    htmlfile = input("Enter url to main doc page: ")
+    output = input("Enter complete location to output src files: ")
     # htmlfile = "http://www.cs.rit.edu/~csci142/Projects/01/doc/"
-    htmlfile = "http://www.cs.rit.edu/~csci142/Labs/09/Doc/"
-    output = "/home/andrew/Documents/AJ-College/Spring2015/CS142/9Mogwai/Lab9"
+    # htmlfile = "http://www.cs.rit.edu/~csci142/Labs/09/Doc/"
+    # output = "/home/andrew/Documents/AJ-College/Spring2015/CS142/9Mogwai/Lab9"
     # htmlfile = "http://www.cs.rit.edu/~csci142/Labs/06/Doc/"
     # output = "/home/andrew/java"
     # output = "/home/andrew/Documents/AJ-College/Spring2015/CS142/6Graduation/Lab6"
     # output = "/home/andrew/school/CS142/4BankAccount/Lab4"
     # output = "/home/andrew/school/CS142/1Perp/Project1"
-    javafile = htmlfile.replace("doc", "src") #look for any given code
     if htmlfile[-1] != "/": #add slashes as appropriate
         htmlfile += "/"
     if output[-1] != "/":
