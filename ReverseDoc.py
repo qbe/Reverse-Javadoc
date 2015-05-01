@@ -170,6 +170,7 @@ def ReverseDoc(html, location):
     """
     my_class = WrittenClass()
     soup = BeautifulSoup(html)
+    print(soup)
     my_class.package = find_package(soup)
     my_class.head_text = ClassName.find_class_name(soup)
     my_class.fields = Fields.find_fields(soup, location)
@@ -179,9 +180,11 @@ def ReverseDoc(html, location):
 
 
 def main(htmlfile=''):
-    htmlfile = input("Enter file name with path: ")
-    # htmlfile = "/home/andrew/Documents/AJ-College/Spring2015/CS142/1Perp/Project1/files/Machine.Add.html"
-    interface_answer = input("Is this an interface? (y/n) ")
+    # htmlfile = input("Enter file name with path: ")
+    htmlfile = "/home/andrew/Documents/AJ-College/Projects/Reverse-Javadoc/tests/Mogwai.html"
+    htmlfile = "/home/andrew/Documents/AJ-College/Projects/Reverse-Javadoc/tests/overview-tree.html"
+    # interface_answer = input("Is this an interface? (y/n) ")
+    interface_answer = 'n'
     interface = interface_answer.upper() in {"YES", "Y"}
     with open(htmlfile) as f:
         htmltext = f.read()

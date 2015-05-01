@@ -22,6 +22,7 @@ def find_class_name(soup):
 """
     my_class = ClassName()
     my_class.title = str(soup.find("pre").text).replace("\n", " ")
-    if soup.find("div", {"class": "description"}).find("div", {"class": "block"}):
-        my_class.comments = ReverseDoc.create_comment(str(soup.find("div", {"class": "block"}).text), False)
+    class_comments = soup.find("div", {"class": "description"}).find("div", {"class": "block"})
+    if class_comments:
+        my_class.comments = ReverseDoc.create_comment(str(class_comments.text), False)
     return my_class

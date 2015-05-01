@@ -64,10 +64,15 @@ def find_fields(soup, location):
     :param soup: Beautiful soup of class page
     :param location: where is the class file (as a URL)
     """
+    print(location)
     fields_list = list()
-    field_summary = soup.find("a", {"name": "field.summary"}, recursive="true")
+    print(re.findall("FIELD", str(soup)))
+    field_summary = soup.find(re.compile("FIELD\sSUMMARY"))
+    # print("Found: " + field_summary)
     if field_summary:
-        for table_row in field_summary.findNext("table").find_all("tr", recursive="true"):
+        field_summary = field_summary.findNext("ul")
+        for table_row in field_summary.find_all("tr", recursive="true"):
+            # print(table_row.text.strip())
             if table_row.text.strip() != "Modifier and Type\nField and Description":
                 new_field = StaticField()
                 for table_code in table_row.find_all("code", recursive="true"):
