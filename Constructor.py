@@ -1,4 +1,4 @@
-import ReverseDoc
+import ReverseDoc, re
 
 
 class Constructor():
@@ -17,7 +17,7 @@ class Constructor():
         self.sig = ""
         self.comments = ""
         self.parameters = list()
-        self.body = list()
+        self.body = ""
 
     def __repr__(self, interface):
         """
@@ -26,12 +26,12 @@ class Constructor():
         :return: string that can be printed to a file
         """
 
-        #TODO consider making this add a private field if it isn't there
-        #TODO consider checking what is in the parent class's constructor and call super on those parameters,
+        # TODO consider making this add a private field if it isn't there
+        # TODO consider checking what is in the parent class's constructor and call super on those parameters,
         # then do this. on the rest, adding the field as necessary
         if self.parameters:
             for parameter in self.parameters:
-                self.body.append("\t\tthis." + parameter[0] + " = " + parameter[0] + ";\n")
+                self.body += "\t\tthis." + parameter[0] + " = " + parameter[0] + ";\n"
         else:
             self.body = ""
         if self.comments and self.parameters:
@@ -44,7 +44,7 @@ class Constructor():
             return header + "\t" + self.sig + ";"
 
         return header + "\t" + self.sig + " {" \
-               + "\n" + "\t\t//TODO Check for accuracy\n" + ReverseDoc.str_list(self.body, interface) + "\n\t} \n\n"
+            + "\n" + "\t\t//TODO Check for accuracy\n" + self.body + "\n\t} \n\n"
 
 
 def find_constructor(soup):
@@ -53,20 +53,26 @@ def find_constructor(soup):
     :param soup: HTML of the class
     :return: constructor instance
     """
-    constructor = soup.find("a", {"name": "constructor.detail"}, recursive="true")
+    constructor = soup.find(text=re.compile("CONSTRUCTOR\sDETAIL"))
     if constructor:
+        constructor = constructor.findNext("ul")
         new_constructor = Constructor()
-        new_constructor.sig = " ".join(str(constructor.findNext("pre").text).replace("\n", "").split())
+        new_constructor.sig = " ".join(str(constructor.find("pre").text).replace("\n", "").split())
+        print(str(new_constructor.sig)) #DEBUG
         if str(new_constructor.sig).find("(") - str(new_constructor.sig).find(")") != -1 and \
-                constructor.findNext("div",{"class": "block"}):
+                constructor.find("div", {"class": "block"}):
             new_constructor.comments = ReverseDoc.create_comment(
-                str(constructor.findNext("div", {"class": "block"}).text), True)
-            constructor_parameters = constructor.find("span", {"class": "paramLabel"})
+                str(constructor.find("div", {"class": "block"}).text), True)
+            print("Parameter hunting") #DEBUG
+            constructor_parameters = constructor.find("span", {"class": "paramLabel"}, recursive=True)
             if constructor_parameters:
+                print("Got one")
                 parameters_list = list()
-                constructor_parameters = constructor_parameters.parent
+                constructor_parameters = constructor_parameters.parent.parent # Move up two levels so dd flag can be seen
                 for parameter in constructor_parameters.find_all("dd"):
+                    print("Parameter" + str(parameter))
                     if parameter.find("code") is not None:
+                        print("Making one")
                         parameters_list.append([parameter.text.split("-", 1)[0].strip(),
                                                 parameter.text.split("-", 1)[1].strip()])
                 new_constructor.parameters = parameters_list
