@@ -1,4 +1,7 @@
-import ReverseDoc, re, copy, Fields
+import re
+import copy
+import ReverseDoc
+import Fields
 
 
 class Constructor():
@@ -26,7 +29,6 @@ class Constructor():
         :return: string that can be printed to a file
         """
 
-        # TODO consider making this add a private field if it isn't there
         # TODO consider checking what is in the parent class's constructor and call super on those parameters,
         # then do this. on the rest, adding the field as necessary
         if self.parameters:
@@ -83,7 +85,6 @@ def check_fields(new_constructor, fields):
         for field in fields:
             if param[0] == field.name:
                 param_to_make.remove(param)
-    # print(param_to_make)
     for param in param_to_make:
         new_field = Fields.StaticField()
         new_field.comments = str(ReverseDoc.create_comment(param[1], True))
