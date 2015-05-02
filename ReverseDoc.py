@@ -174,7 +174,7 @@ def ReverseDoc(html, location):
     my_class.head_text = ClassName.find_class_name(soup)
     my_class.fields = Fields.find_fields(soup, location)
     my_class.methods = Method.find_methods(soup)
-    my_class.constructor = Constructor.find_constructor(soup)
+    my_class.constructor = Constructor.find_constructor(soup, my_class.fields)
     return my_class
 
 
