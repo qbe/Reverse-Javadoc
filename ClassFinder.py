@@ -31,7 +31,8 @@ def findClasses(soup):
         class_list = classes.find_all("a") #list of classes
         for java_class in class_list:
             new_class = Java()
-            new_class.name = str(java_class.find("span", {"class": "typeNameLink"}).text)
+#            new_class.name = str(java_class.find("span", {"class": "typeNameLink"}).text)
+            new_class.name = str(java_class.find("span", class_="typeNameLink"))
             new_class.location = str(java_class.get("href"))
             java_class_list.append(new_class)
     return java_class_list
@@ -51,7 +52,8 @@ def findInterfaces(soup):
         temp_list = interfaces.find_all("li")
         for temp_class in temp_list:
             new_class = Java()
-            new_class.name = str(temp_class.find("span", {"class": "typeNameLink"}).text)
+#            new_class.name = str(temp_class.find("span", {"class": "typeNameLink"}).string)
+            new_class.name = str(temp_class.find("span", class_="typeNameLink"))
             new_class.location = str(temp_class.find("a").get("href"))
             interface_list.append(new_class)
     return interface_list
