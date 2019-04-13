@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 from bs4 import BeautifulSoup
-import sys
 import ClassName
 import Fields
 import Method
@@ -9,16 +8,17 @@ import Constructor
 
 class Comment():
     """
-    class comment
-
     comment stores a comment for later printing
 
-    slots:
-        comment_type - The type of comment. Either "line" or "block"
-        comment_lines - The lines of the comment. If comment_type==line then comment_lines should only have one index
-"""
+    """
 
     def __init__(self, indent):
+        """
+        Make a new instance of the comment class
+        attributes:
+            comment_lines: list of lines in the comment that will have new line characters appended to facilitate readability
+            :param indent: whether or not to indent (used to make unindented comments at the top of class files
+        """
         self.indent = indent
         self.comment_lines = list()
 
@@ -27,7 +27,7 @@ class Comment():
         """
         method __repr__(self)
 
-        if comment_type is "block" returns comment string in format:
+        returns:
             /**
              * self.comment_lines
 
@@ -48,14 +48,14 @@ class Comment():
 
 class WrittenClass(object):
     """
-    class writen_class
-
     Stores class for later printing
 
-    slots:
-        head_text - the name of the method along with what it implements and extends
-        methods - a python list filled with type method used to store the methods of this class
-        fields - a python list filled with type fields used to store the static fields of this class
+    attributes:
+        package: string containing the package location
+        head_text: the name of the method along with what it implements and extends
+        constructor: a constructor object for this class (not combined with method as it does some special guessing)
+        methods: a python list filled with type method used to store the methods of this class
+        fields:  a python list filled with type fields used to store the fields of this class
     """
 
     def __init__(self):
@@ -66,16 +66,10 @@ class WrittenClass(object):
         self.constructor = ""
 
 
-    def __str__(self, interface):
+    def __repr__(self, interface):
         """
-        method __repr__(self)
-
-        Returns the class as a string in the format:
-        class self.head_text + {
-            str_list( self.fields )
-
-            str_list( self.methods )
-        }
+        Go through each of the attribute and add it to the string if it exists. Special characters like "{" and "}"
+        as necessary. Head_text should always be present, but is in the if statement just in case.
     """
         javaClass = ""
         if self.package:
@@ -113,6 +107,12 @@ def parameter_print(parameters_in):
 
 
 def str_list_no_int(pyList):
+    """
+    Used when interface vs non-interface has no effect and repr doesn't take another parameter
+    (might be able to be combined with str_list)
+    :param pyList: list to be turned into a string
+    :return: new string
+    """
     new_str = ""
     for list_item in pyList:
         new_str += str(list_item.__repr__())
@@ -121,13 +121,11 @@ def str_list_no_int(pyList):
 
 def str_list(pyList, interface):
     """
-    method str_list
-
-    Return a string containing the str( ) of the items in the given pyList
-
-    Arguments:
-        pyList - python list to be converted to string
-"""
+    Used when interface vs non-interface has an effect and repr takes another parameter to indicate interface or not
+    (might be able to be combined with str_list_no_int)
+    :param pyList: list to be turned into a string
+    :return: new string
+    """
     new_str = ""
     for list_item in pyList:
         new_str += str(list_item.__repr__(interface))
@@ -135,60 +133,63 @@ def str_list(pyList, interface):
 
 
 def create_comment(comment_text, indent):
+
     """
-    method create_comment
-
-    Creates a comment object from a given string
-
-    Arguments:
-        comment_text - the text to be in the comment
-"""
+    Makes a new instance of the comment class
+    Removes the line breaks so it can be printed as one string
+    :param comment_text: text to be added. Should not contain parameters or returns
+    :param indent: whether or not to indent this comment. Used for class comments
+    :return: instance of the comment class
+    """
     new_comment = Comment(indent)
 
     for line in comment_text.split("\n"):
-        new_comment.comment_lines.append(str(line).replace("Returns:", "@return "))
+        new_comment.comment_lines.append(str(line))
 
     return new_comment
 
 
 def find_package(soup):
+    """
+    Finds the package of the class
+    :param soup: html of the class file
+    :return: string of the package the class is in
+    """
     package = soup.find("div", {"class": "subTitle"})
     if package:
-        return package.text
+        return str(package.text)
 
 
 def ReverseDoc(html, location):
+
     """
-    method ReverseDoc
-
-    takes a pages html and prints out the class that's described on the page
-
-    Arguments:
-        html - the pages html
-"""
+    Creates the class or interface file for the given class
+    :param html: html of class file
+    :param location: URL of top level documentation. Used so fields can look for constants
+    :return: Written class object that can be printed to a file
+    """
     my_class = WrittenClass()
     soup = BeautifulSoup(html)
     my_class.package = find_package(soup)
     my_class.head_text = ClassName.find_class_name(soup)
     my_class.fields = Fields.find_fields(soup, location)
     my_class.methods = Method.find_methods(soup)
-    my_class.constructor = Constructor.find_constructor(soup)
+    my_class.constructor = Constructor.find_constructor(soup, my_class.fields)
     return my_class
 
 
 def main(htmlfile=''):
-    htmlfile = input("Enter file name with path: ")
-    interface = input("Is this an interface? (y/n) ")
-    if interface.upper() == "YES" or "Y":
-        interface = True
-    else:
-        interface = False
+    # htmlfile = input("Enter file name with path: ")
+    # htmlfile = "/home/andrew/Documents/AJ-College/Projects/Reverse-Javadoc/tests/Mogwai.html"
+    # htmlfile = "/home/andrew/Documents/AJ-College/Projects/Reverse-Javadoc/tests/overview-tree.html"
+    interface_answer = input("Is this an interface? (y/n) ")
+    # interface_answer = 'n'
+    interface = interface_answer.upper() in {"YES", "Y"}
     with open(htmlfile) as f:
         htmltext = f.read()
-    java = ReverseDoc(htmltext, interface)
-    print(htmlfile.split(".h")[0] + ".java")
-    with open(htmlfile.split(".h")[0] + ".java", "w") as f:
-        f.write(str(java))
+    java = ReverseDoc(htmltext, htmlfile)
+    with open(htmlfile.replace("html", "java"), "w") as f:
+        f.write(java.__str__(interface))
 
 
 if __name__ == '__main__':

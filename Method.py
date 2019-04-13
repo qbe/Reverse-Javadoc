@@ -53,14 +53,18 @@ class Method():
             self.return_type = "public " + self.return_type
         if self.overrides:
             header += "\t@Override\n"
-        if self.return_type.find("int") != -1:
+        if self.return_type.find("byte") != -1 or self.return_type.find("short") != -1 or \
+                        self.return_type.find("int") != -1 or self.return_type.find("long") != -1 or \
+                self.return_type.find("float") != -1 or self.return_type.find("double") != -1:
             self.method_body = "\n\t\treturn 0;"
-        if self.return_type.find("double") != -1:
-            self.method_body = "\n\t\treturn 0.0;"
-        if self.return_type.find("boolean") != -1:
-            self.method_body = "\n\t\treturn False;"
-        if self.return_type.find("String") != -1:
-            self.method_body = '\n\t\treturn "";'
+        # if self.return_type.find("double") != -1:
+        #     self.method_body = "\n\t\treturn 0.0d;"
+        elif self.return_type.find("boolean") != -1:
+            self.method_body = "\n\t\treturn false;"
+        elif self.return_type.find("char") != -1:
+            self.method_body = "\n\t\treturn '\u0000';"
+        elif self.return_type.find("void") == -1:
+            self.method_body = '\n\t\treturn null;'
         if interface or self.return_type.find("abstract") != -1:
             return header + "\t" + self.return_type + " " + self.name + ";\n\n"
 
@@ -82,12 +86,15 @@ def find_methods_details(methods_list, soup):
         method_details = method_details.findNext("ul")
         comment = method_details.find("div", {"class": "block"})
         if comment:
-            method.comments = ReverseDoc.create_comment(str(comment.text), True)
+            comment = comment.text
+        else:
+            comment = ""
+        method.comments = ReverseDoc.create_comment(str(comment), True)
         method_parameters = method_details.find("span", {"class": "paramLabel"})
         if method_parameters:
             parameter = method_parameters.parent.next_sibling.next_sibling
             parameters_list = list()
-            while str(parameter).find("Returns:") == -1 and parameter:
+            while str(parameter).find("Returns:") == -1 and parameter and str(parameter).find("Throws:") == -1:
                 parameters_list.append([parameter.text.split("-", 1)[0].strip(),
                                         parameter.text.split("-", 1)[1].strip()])
                 parameter = parameter.next_sibling.next_sibling

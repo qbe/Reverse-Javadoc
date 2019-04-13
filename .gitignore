@@ -6,3 +6,5 @@ index.php.txt
 *.pyc
 *.java
 *.html
+.idea/*
+counting/
