@@ -43,7 +43,9 @@ def find_fields_details(fields_list, soup):
     """
     for field in fields_list:
         field_details = soup.find("a", {"name": field.name})
-        field.name = str(field_details.findNext("pre").text).replace(u'\u00a0', " ")
+        if(field_details == None):
+            continue
+        field.name = str(field_details.find_next("pre").text).replace(u'\u00a0', " ")
         if field_details.findNext("div", {"class": "block"}):
             field.comments = ReverseDoc.create_comment(str(field_details.findNext("div", {"class": "block"}).text),
                                                        True)

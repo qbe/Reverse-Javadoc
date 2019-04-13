@@ -83,7 +83,9 @@ def find_methods_details(methods_list, soup):
     """
     for method in methods_list:
         method_details = soup.find("a", {"name": re.compile(method.name.split("(")[0])})
-        method_details = method_details.findNext("ul")
+        if(method_details == None):
+            continue
+        method_details = method_details.find_next("ul")
         comment = method_details.find("div", {"class": "block"})
         if comment:
             comment = comment.text

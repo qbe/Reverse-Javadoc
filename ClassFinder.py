@@ -81,6 +81,8 @@ def main():
     interface_list = findInterfaces(soup)
     #TODO make this a function and pass it interface or class as appropriate
     for java_class in class_list:
+        if(java_class.location.startswith("https://docs.oracle.com/javase")):
+            continue
         new_class = (
                 ReverseDoc.ReverseDoc(urllib.request.urlopen(htmlfile + java_class.location).read(), htmlfile), "except")
         path = os.path.join(output, java_class.location.replace(".html", "") + ".java")
@@ -94,6 +96,8 @@ def main():
             else:
                 f.write(new_class[0].__repr__(False)) #telling it to print as a class
     for interface in interface_list:
+        if(interface.location.startswith("https://docs.oracle.com/javase")):
+            continue
         new_interface = (
                 ReverseDoc.ReverseDoc(urllib.request.urlopen(htmlfile + interface.location).read(), htmlfile), "except")
         path = os.path.join(output, interface.location.replace(".html", "") + ".java")
