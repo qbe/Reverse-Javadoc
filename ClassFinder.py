@@ -61,8 +61,8 @@ def findInterfaces(soup):
 
 def main():
     parser=argparse.ArgumentParser(description='a program that generates stubs form JavaDoc')
-    parser.add_argument('--doc', type=string, default='', help='url to main doc page(index)')
-    parser.add_argument('--src', type=string, default='', help='complete location to output src files: ')
+    parser.add_argument('--doc', type=str, default='', help='url to main doc page(index)')
+    parser.add_argument('--src', type=str, default='', help='complete location to output src files: ')
     args = parser.parse_args()
 
     htmlfile=args.doc
