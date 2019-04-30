@@ -4,7 +4,7 @@ import os
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 import urllib.error
-
+import argparse
 
 class Java():
     """
@@ -60,8 +60,17 @@ def findInterfaces(soup):
 
 
 def main():
-    htmlfile = input("Enter url to main doc page: ")
-    output = input("Enter complete location to output src files: ")
+    parser=argparse.ArgumentParser(description='a program that generates stubs form JavaDoc')
+    parser.add_argument('--doc', type=string, default='', help='url to main doc page(index)')
+    parser.add_argument('--src', type=string, default='', help='complete location to output src files: ')
+    args = parser.parse_args()
+
+    htmlfile=args.doc
+    output=args.src
+    if(args.doc == ''):
+        htmlfile = input("Enter url to main doc page: ")
+    if(args.src == ''):
+        output = input("Enter complete location to output src files: ")
     # htmlfile = "http://www.cs.rit.edu/~csci142/Projects/01/doc/"
     # htmlfile = "http://www.cs.rit.edu/~csci142/Labs/09/Doc/"
     # output = "/home/andrew/Documents/AJ-College/Spring2015/CS142/9Mogwai/Lab9"
